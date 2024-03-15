@@ -5,26 +5,31 @@ import { BACKEND_URL } from "../global";
 
 export default function SignUp() {
 
-    // const [username, setUsername] = useState("")
-    // const [email, setEmail] = useState("")
-    // const [password, setPassword] = useState("")
     const [state, setState] = useState({
         username: "",
         email: "",
         password: ""
     })
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(false)
+    const [disabled, setDisabled] = useState(false)
 
     const inputStyles = "bg-slate-200 p-3 rounded-lg";
 
     function inputHandler(e) {
+        setLoading(false)
+        setDisabled(false)
+        setError(false)
         const { name, value } = e.target
         setState({ ...state, [name]: value })
     }
 
     async function submitHandler(e) {
         e.preventDefault()
-        //console.log(state)
-
+        console.log(state)
+        setError(false)
+        setLoading(true)
+        setDisabled(true)
         try {
             const response = await axios.post(`${BACKEND_URL}/signup`, state, {
                 headers: {
@@ -32,8 +37,11 @@ export default function SignUp() {
                 }
             })
             console.log(response.data)
+            setLoading(false)
+            setDisabled(false)
         }
         catch (err) {
+            setError(true)
             if (err.response) {
                 console.log(err.response.data)
             }
@@ -75,14 +83,20 @@ export default function SignUp() {
                 <button
                     className="bg-slate-700 p-3 rounded-lg text-white uppercase hover:opacity-95 disabled:opacity-80 my-5"
                     onClick={submitHandler}
+                    disabled={loading}
                 >
-                    Sign Up
+                    {loading ? "Loading" : "Sign Up"}
                 </button>
             </div>
 
             <div className="flex items-center justify-center mt-3 gap-2">
                 <p>Have an account?</p>
-                <Link to="/signin" className="text-blue-500">Sign In</Link>
+                <Link to="/signin">
+                    <span className="text-blue-500">Sign In</span>
+                </Link>
+            </div>
+            <div className="text-center">
+                <p className="text-red-700 mt-7">{error ? "something went wrong..." : null}</p>
             </div>
         </div>
     );
