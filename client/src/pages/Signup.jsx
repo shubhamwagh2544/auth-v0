@@ -12,13 +12,11 @@ export default function SignUp() {
     })
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
-    const [disabled, setDisabled] = useState(false)
 
     const inputStyles = "bg-slate-200 p-3 rounded-lg";
 
     function inputHandler(e) {
         setLoading(false)
-        setDisabled(false)
         setError(false)
         const { name, value } = e.target
         setState({ ...state, [name]: value })
@@ -29,7 +27,6 @@ export default function SignUp() {
         console.log(state)
         setError(false)
         setLoading(true)
-        setDisabled(true)
         try {
             const response = await axios.post(`${BACKEND_URL}/signup`, state, {
                 headers: {
@@ -38,7 +35,6 @@ export default function SignUp() {
             })
             console.log(response.data)
             setLoading(false)
-            setDisabled(false)
         }
         catch (err) {
             setError(true)
