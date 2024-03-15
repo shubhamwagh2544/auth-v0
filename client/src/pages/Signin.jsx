@@ -2,20 +2,26 @@ import { useState } from "react";
 import axios from 'axios'
 import { Link } from "react-router-dom";
 import { BACKEND_URL } from "../global";
+import { signInStart, signInSuccess, signInFailure, inputHandleActive } from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function SignIn() {
     const [state, setState] = useState({
         email: "",
         password: ""
     })
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(false)
+    //const [loading, setLoading] = useState(false)
+    //const [error, setError] = useState(false)
 
     const inputStyles = "bg-slate-200 p-3 rounded-lg";
 
+    const dispatch = useDispatch()
+    const { loading, error } = useSelector((state) => state.user)
+
     function inputHandler(e) {
-        setLoading(false)
-        setError(false)
+        //setLoading(false)
+        //setError(false)
+        dispatch(inputHandleActive())
         const { name, value } = e.target
         setState({ ...state, [name]: value })
     }
@@ -23,8 +29,9 @@ export default function SignIn() {
     async function submitHandler(e) {
         e.preventDefault()
         console.log(state)
-        setError(false)
-        setLoading(true)
+        //setError(false)
+        //setLoading(true)
+        dispatch(signInStart())
         try {
             const response = await axios.post(`${BACKEND_URL}/signin`, state, {
                 headers: {
@@ -32,10 +39,13 @@ export default function SignIn() {
                 }
             })
             console.log(response.data)
-            setLoading(false)
+            //setLoading(false)
+            dispatch(signInSuccess(response.data))
         }
         catch (err) {
-            setError(true)
+            //setLoading(false)
+            //setError(true)
+            dispatch(signInFailure())
             if (err.response) {
                 console.log(err.response.data)
             }
