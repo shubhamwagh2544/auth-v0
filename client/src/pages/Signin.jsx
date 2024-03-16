@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { BACKEND_URL } from "../global";
 import { signInStart, signInSuccess, signInFailure, inputHandleActive } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import OAuth from "../components/OAuth";
 
 export default function SignIn() {
     const [state, setState] = useState({
@@ -17,11 +19,14 @@ export default function SignIn() {
 
     const dispatch = useDispatch()
     const { loading, error } = useSelector((state) => state.user)
+    const navigate = useNavigate()
 
     function inputHandler(e) {
         //setLoading(false)
         //setError(false)
-        dispatch(inputHandleActive())
+        if (loading || error) {
+            dispatch(inputHandleActive())
+        }
         const { name, value } = e.target
         setState({ ...state, [name]: value })
     }
@@ -41,6 +46,7 @@ export default function SignIn() {
             console.log(response.data)
             //setLoading(false)
             dispatch(signInSuccess(response.data))
+            //navigate('/profile')
         }
         catch (err) {
             //setLoading(false)
@@ -77,15 +83,16 @@ export default function SignIn() {
                     onChange={inputHandler}
                 />
                 <button
-                    className="bg-slate-700 p-3 rounded-lg text-white uppercase hover:opacity-95 disabled:opacity-80 my-5"
+                    className="bg-slate-700 p-3 rounded-lg text-white uppercase hover:opacity-90 disabled:opacity-80"
                     onClick={submitHandler}
                     disabled={loading}
                 >
                     {loading ? "Loading" : "Sign In"}
                 </button>
+                <OAuth />
             </div>
 
-            <div className="flex items-center justify-center mt-3 gap-2">
+            <div className="flex items-center justify-center mt-10 gap-2">
                 <p>Have an account?</p>
                 <Link to="/signup">
                     <span className="text-blue-500">Sign Up</span>

@@ -91,6 +91,11 @@ app.post('/signin', async (req, res, next) => {
 
 })
 
+// googleauth route
+app.post('/googleauth', async (req, res, next) => {
+
+})
+
 // global route handler
 app.all('*', (req, res) => {
     return res.json({

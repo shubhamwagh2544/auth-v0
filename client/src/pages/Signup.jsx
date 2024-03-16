@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { BACKEND_URL } from "../global";
 import { signInStart, signInSuccess, signInFailure, inputHandleActive } from "../redux/user/userSlice";
 import { useSelector, useDispatch } from "react-redux";
+import OAuth from "../components/OAuth";
 
 export default function SignUp() {
 
@@ -87,15 +88,16 @@ export default function SignUp() {
                     onChange={inputHandler}
                 />
                 <button
-                    className="bg-slate-700 p-3 rounded-lg text-white uppercase hover:opacity-95 disabled:opacity-80 my-5"
+                    className="bg-slate-700 p-3 rounded-lg text-white uppercase hover:opacity-90 disabled:opacity-80"
                     onClick={submitHandler}
                     disabled={loading}
                 >
                     {loading ? "Loading" : "Sign Up"}
                 </button>
+                <OAuth />
             </div>
 
-            <div className="flex items-center justify-center mt-3 gap-2">
+            <div className="flex items-center justify-center mt-10 gap-2">
                 <p>Have an account?</p>
                 <Link to="/signin">
                     <span className="text-blue-500">Sign In</span>
