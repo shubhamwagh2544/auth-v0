@@ -154,6 +154,12 @@ app.delete('/delete/:id', authmiddleware, async (req, res, next) => {
     }
 })
 
+app.get('/signout', (req, res) => {
+    return res.clearCookie('token').json({
+        message: 'user signed out successfully'
+    })
+})
+
 // global route handler
 app.all('*', (req, res) => {
     return res.json({

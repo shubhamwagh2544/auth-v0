@@ -7,7 +7,7 @@ import { app } from "../firebase";
 import { BACKEND_URL } from "../global";
 import {
     updateUserStart, updateUserSuccess, updateUserFailure,
-    deleteUserStart, deleteUserSuccess, deleteUserFailure
+    deleteUserStart, deleteUserSuccess, deleteUserFailure, signout
 } from "../redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
 
@@ -122,6 +122,25 @@ export default function Profile() {
     }
 
     async function handleSignOut() {
+        try {
+            await axios.get(`${BACKEND_URL}/signout`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: localStorage.getItem('token')
+                }
+            })
+            localStorage.removeItem('token')
+            dispatch(signout())
+            navigate('/signin')
+        }
+        catch (err) {
+            if (err.response) {
+                console.log(err.response.data)
+            }
+            else if (err.request) {
+                console.log(err.request)
+            }
+        }
     }
 
     return (
