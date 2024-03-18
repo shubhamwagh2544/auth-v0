@@ -7,18 +7,18 @@ export default function Header() {
     console.log(currentUser)
 
     return (
-        <div className="flex bg-slate-200 justify-between p-3">
+        <div className="flex bg-slate-200 justify-between items-center p-3">
             <Link to="/">
                 <div className="text-2xl font-semibold ml-10 text-red-600">Auth App</div>
             </Link>
             <ul className="flex gap-8 mr-10">
-                <Link to="/home">                   {/* Link must be inside Router */}
+                {/* <Link to="/home">                   
                     <li>Home</li>
                 </Link>
                 <Link to="/about">
                     <li>About</li>
-                </Link>
-                <Link to="/profile">
+                </Link> */}
+                <Link to="/profile">            {/* Link must be inside Router */}
                     {
                         currentUser ? (
                             <img
