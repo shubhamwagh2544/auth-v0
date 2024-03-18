@@ -18,7 +18,7 @@ export default function SignIn() {
     const inputStyles = "bg-slate-200 p-3 rounded-lg";
 
     const dispatch = useDispatch()
-    const { loading, error } = useSelector((state) => state.user)
+    const { currentUser, loading, error } = useSelector((state) => state.user)
     const navigate = useNavigate()
 
     function inputHandler(e) {

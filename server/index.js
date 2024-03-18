@@ -47,7 +47,7 @@ app.post('/signup', async (req, res, next) => {
         // send jwt
         const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET_KEY)
 
-        const {password: hashedPwd, ...restUser} = user._doc
+        const { password: hashedPwd, ...restUser } = user._doc
         return res.status(201).json({
             message: 'user created successfully',
             user: restUser,
@@ -127,10 +127,26 @@ app.put('/update/:id', authmiddleware, async (req, res, next) => {
         }, { new: true })
 
         const { password: hashedPassword, ...restUser } = updatedUser._doc
-        
+
         return res.status(200).json({
             message: 'user updated successfully',
             user: restUser
+        })
+    }
+    catch (err) {
+        return next(err)
+    }
+})
+
+app.delete('/delete/:id', authmiddleware, async (req, res, next) => {
+    if (req.params.id != req.user.id) {
+        return next(errorHandler(401, "unauthorized access..."))
+    }
+
+    try {
+        await User.findByIdAndDelete(req.params.id)
+        return res.status(200).json({
+            message: 'user deleted successfully'
         })
     }
     catch (err) {

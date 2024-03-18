@@ -5,11 +5,15 @@ import { useDispatch } from "react-redux";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage'
 import { app } from "../firebase";
 import { BACKEND_URL } from "../global";
-import { updateUserStart, updateUserSuccess, updateUserFailure } from "../redux/user/userSlice";
+import {
+    updateUserStart, updateUserSuccess, updateUserFailure,
+    deleteUserStart, deleteUserSuccess, deleteUserFailure
+} from "../redux/user/userSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
 
-    const { currentUser } = useSelector((state) => state.user)
+    const { currentUser, loading, error } = useSelector((state) => state.user)
     //console.log(currentUser.user)
 
     const fileRef = useRef(null)
@@ -23,6 +27,8 @@ export default function Profile() {
         profilePhoto: currentUser.profilePhoto
     })
     const dispatch = useDispatch()
+    const [updateSuccess, setUpdateSuccess] = useState(false)
+    const navigate = useNavigate()
     const inputStyles = "bg-slate-200 p-3 rounded-lg";
 
     useEffect(() => {
@@ -75,8 +81,10 @@ export default function Profile() {
             })
             console.log(res.data)
             dispatch(updateUserSuccess(res.data.user))
+            setUpdateSuccess(true)
         }
         catch (err) {
+            setUpdateSuccess(false)
             dispatch(updateUserFailure())
             if (err.response) {
                 console.log(err.response.data)
@@ -85,6 +93,35 @@ export default function Profile() {
                 console.log(err.request)
             }
         }
+    }
+
+    async function handleDeleteAccount() {
+        try {
+            dispatch(deleteUserStart())
+            const res = await axios.delete(`${BACKEND_URL}/delete/${currentUser._id}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: localStorage.getItem('token')
+                }
+            })
+            console.log(res.data)
+            dispatch(deleteUserSuccess(res.data))
+            //localStorage.removeItem('token')
+            localStorage.clear()
+            navigate('/signin')
+        }
+        catch (err) {
+            dispatch(deleteUserFailure())
+            if (err.response) {
+                console.log(err.response.data)
+            }
+            else if (err.request) {
+                console.log(err.request)
+            }
+        }
+    }
+
+    async function handleSignOut() {
     }
 
     return (
@@ -151,11 +188,35 @@ export default function Profile() {
                     className="bg-slate-700 p-3 rounded-lg text-white uppercase hover:opacity-90 disabled:opacity-80"
                     onClick={handleSubmit}
                 >
-                    Update Profile
+                    {loading ? "Updating" : "Update Profile"}
                 </button>
-                <div className="flex justify-between mt-10">
-                    <span className="text-red-700 cursor-pointer">Delete Account</span>
-                    <span className="text-red-700 cursor-pointer">Sign Out</span>
+                <p>
+                    {
+                        error ? (
+                            <span className="text-red-700 mt-3">something went wrong...</span>
+                        ) : null
+                    }
+                </p>
+                <p>
+                    {
+                        updateSuccess ? (
+                            <span className="text-green-700 mt-3">Profile updated successfully...</span>
+                        ) : null
+                    }
+                </p>
+                <div className="flex justify-between mt-5">
+                    <span
+                        className="text-red-700 cursor-pointer"
+                        onClick={handleDeleteAccount}
+                    >
+                        Delete Account
+                    </span>
+                    <span
+                        className="text-red-700 cursor-pointer"
+                        onClick={handleSignOut}
+                    >
+                        Sign Out
+                    </span>
                 </div>
             </div>
         </div>
