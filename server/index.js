@@ -30,13 +30,14 @@ mongoose
 
 app.use(express.json())
 app.use(cors(corsConfig))
+app.options('*', cors(corsConfig));
 app.use(cookieParser())
 
 // deployment
 const __dirname = path.resolve()
 app.use(express.static(path.join(__dirname, 'client/dist')))
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client', 'dist','index.html'))
+    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'))
 })
 
 // routes
