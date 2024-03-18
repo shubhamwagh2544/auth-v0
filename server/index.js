@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
-import bcrypt from 'bcrypt'
+import bcrypt, { hash } from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import cookieParser from 'cookie-parser'
 import { User } from './db.js'
@@ -96,14 +96,39 @@ app.post('/signin', async (req, res, next) => {
 
 // googleauth route
 app.post('/googleauth', async (req, res, next) => {
-
+    // TODO
 })
 
 // update profile
-app.post('/update/:id', authmiddleware, (req, res, next) => {
-    return res.json({
-        msg: 'updated'
-    })
+app.put('/update/:id', authmiddleware, async (req, res, next) => {
+    if (req.params.id != req.user.id) {
+        return next(errorHandler(401, "unauthorized access..."))
+    }
+
+    try {
+        // if client sends new password, we must hash it
+        if (req.body.password) {
+            req.body.password = bcrypt.hashSync(req.body.password, 10)
+        }
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, {
+            $set: {
+                username: req.body.username,
+                email: req.body.email,
+                password: req.body.password,
+                profilePhoto: req.body.profilePhoto
+            },
+        }, { new: true })
+
+        const { password: hashedPassword, ...restUser } = updatedUser._doc
+        
+        return res.status(200).json({
+            message: 'user updated successfully',
+            updatedUser: restUser
+        })
+    }
+    catch (err) {
+        return next(err)
+    }
 })
 
 // global route handler

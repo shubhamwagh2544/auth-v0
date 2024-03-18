@@ -1,11 +1,21 @@
+import jwt from "jsonwebtoken"
+import errorHandler from "./error.js"
+
 export function authmiddleware(req, res, next) {
     const token = req.cookies.token
     if (!token) {
-        console.log('no token:::')
-        next()
+        return next(errorHandler(401, "unauthorized access...please sign in first!"))
     }
     else {
-        console.log('token::' + token)
-        next()
+        // verify the token
+        jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+            if (err) {
+                return next(errorHandler(403, "invalid token...please sign in again!"))
+            }
+            else {
+                req.user = decoded          // store the user info in req object
+                next()
+            }
+        })
     }
 }
