@@ -5,6 +5,7 @@ import cors from 'cors'
 import bcrypt, { hash } from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import cookieParser from 'cookie-parser'
+import path from 'path'
 import { User } from './db.js'
 import errorHandler from './error.js'
 import { authmiddleware } from './authmiddleware.js'
@@ -27,6 +28,13 @@ mongoose
 app.use(express.json())
 app.use(cors())
 app.use(cookieParser())
+
+// deployment
+const __dirname = path.resolve()
+app.use(express.static(path.join(__dirname, 'client/dist')))
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client', 'dist','index.html'))
+})
 
 // routes
 // signup route
@@ -110,7 +118,7 @@ app.post('/googleauth', async (req, res, next) => {
         if (user) {
             const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET_KEY)
             const { password: hashedPassword, ...restUser } = user._doc
-            
+
             return res.status(200).json({
                 message: 'user signed in successfully',
                 user: restUser,
@@ -121,18 +129,18 @@ app.post('/googleauth', async (req, res, next) => {
             // create hashed password for user
             const randomPassword = Math.random().toString(36).slice(-8)
             const hashedPassword = bcrypt.hashSync(randomPassword, 10)
-            
+
             const newUser = new User({
                 username: req.body.name + Math.floor(Math.random() * 1000),
                 email: req.body.email,
                 password: hashedPassword,
                 profilePhoto: req.body.photo
             })
-            
+
             await newUser.save()
             const token = jwt.sign({ id: newUser._id, email: newUser.email }, process.env.JWT_SECRET_KEY)
             const { password: hashedPwd, ...restUser } = newUser._doc
-            
+
             return res.status(201).json({
                 message: 'user created and signed in successfully',
                 user: restUser,
