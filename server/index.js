@@ -4,8 +4,10 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import cookieParser from 'cookie-parser'
 import { User } from './db.js'
 import errorHandler from './error.js'
+import { authmiddleware } from './authmiddleware.js'
 const app = express()
 const PORT = 3000
 dotenv.config()
@@ -24,6 +26,7 @@ mongoose
 
 app.use(express.json())
 app.use(cors())
+app.use(cookieParser())
 
 // routes
 // signup route
@@ -94,6 +97,13 @@ app.post('/signin', async (req, res, next) => {
 // googleauth route
 app.post('/googleauth', async (req, res, next) => {
 
+})
+
+// update profile
+app.post('/update/:id', authmiddleware, (req, res, next) => {
+    return res.json({
+        msg: 'updated'
+    })
 })
 
 // global route handler
