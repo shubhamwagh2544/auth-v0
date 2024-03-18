@@ -17,10 +17,10 @@ export default function Profile() {
     const [imageUploadPercentage, setImageUploadPercentage] = useState(0)
     const [imageError, setImageError] = useState(false)
     const [state, setState] = useState({
-        username: currentUser.user.username,
-        email: currentUser.user.email,
-        password: currentUser.user.password,
-        profilePhoto: currentUser.user.profilePhoto
+        username: currentUser.username,
+        email: currentUser.email,
+        password: currentUser.password,
+        profilePhoto: currentUser.profilePhoto
     })
     const dispatch = useDispatch()
     const inputStyles = "bg-slate-200 p-3 rounded-lg";
@@ -67,14 +67,14 @@ export default function Profile() {
 
         try {
             dispatch(updateUserStart())
-            const res = await axios.put(`${BACKEND_URL}/update/${currentUser.user._id}`, state, {
+            const res = await axios.put(`${BACKEND_URL}/update/${currentUser._id}`, state, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: localStorage.getItem('token')
                 }
             })
             console.log(res.data)
-            dispatch(updateUserSuccess(res.data.updatedUser))
+            dispatch(updateUserSuccess(res.data.user))
         }
         catch (err) {
             dispatch(updateUserFailure())
@@ -105,7 +105,7 @@ export default function Profile() {
                 request.resource.contentType.matches('image/.*') 
             */}
             <img
-                src={state.profilePhoto || currentUser.user.profilePhoto}
+                src={state.profilePhoto || currentUser.profilePhoto}
                 alt="profile"
                 className="h-24 w-24 rounded-full cursor-pointer mx-auto mb-10"
                 onClick={() => fileRef.current.click()}
@@ -126,7 +126,7 @@ export default function Profile() {
             <div className="flex flex-col max-w-lg gap-5 mx-auto">
                 <input
                     className={inputStyles}
-                    defaultValue={currentUser.user.username}
+                    defaultValue={currentUser.username}
                     type="text"
                     name="username"
                     placeholder="Username"
@@ -134,7 +134,7 @@ export default function Profile() {
                 />
                 <input
                     className={inputStyles}
-                    defaultValue={currentUser.user.email}
+                    defaultValue={currentUser.email}
                     type="text"
                     name="email"
                     placeholder="Email"

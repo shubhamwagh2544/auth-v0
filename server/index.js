@@ -130,7 +130,7 @@ app.put('/update/:id', authmiddleware, async (req, res, next) => {
         
         return res.status(200).json({
             message: 'user updated successfully',
-            updatedUser: restUser
+            user: restUser
         })
     }
     catch (err) {
