@@ -12,17 +12,17 @@ import { authmiddleware } from './authmiddleware.js'
 const app = express()
 const PORT = 3000
 dotenv.config()
-const corsConfig = {
-    origin: [
-        'http://localhost:5173',
-        'http://localhost:3000',
-        'https://auth-v0.onrender.com',
-        'http://127.0.0.1/5173'
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
-    credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With']
-}
+// const corsConfig = {
+//     origin: [
+//         'http://localhost:5173',
+//         'http://localhost:3000',
+//         'https://auth-v0.onrender.com',
+//         'http://127.0.0.1/5173'
+//     ],
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
+//     credentials: true,
+//     allowedHeaders: ["*"]
+// }
 
 mongoose
     .connect(process.env.MONGO)
@@ -30,7 +30,7 @@ mongoose
     .catch((err) => console.log(err))
 
 app.use(express.json())
-app.use(cors(corsConfig))
+app.use(cors())
 app.use(cookieParser())
 
 // deployment
