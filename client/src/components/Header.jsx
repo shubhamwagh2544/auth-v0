@@ -12,7 +12,7 @@ export default function Header() {
                 <div className="text-2xl font-semibold ml-10 text-red-600">Auth App</div>
             </Link>
             <ul className="flex gap-8 mr-10">
-                <Link to="/">                   {/* Link must be inside Router */}
+                <Link to="/home">                   {/* Link must be inside Router */}
                     <li>Home</li>
                 </Link>
                 <Link to="/about">

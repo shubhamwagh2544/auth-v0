@@ -2,7 +2,9 @@ import jwt from "jsonwebtoken"
 import errorHandler from "./error.js"
 
 export function authmiddleware(req, res, next) {
-    const token = req.cookies.token
+    //const token = req.cookies.token
+    const token = req.headers.authorization.split(" ")[1]
+    //console.log(token)
     if (!token) {
         return next(errorHandler(401, "unauthorized access...please sign in first!"))
     }

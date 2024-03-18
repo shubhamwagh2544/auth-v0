@@ -43,8 +43,15 @@ app.post('/signup', async (req, res, next) => {
             password: hashedPassword
         })
         await user.save()
+
+        // send jwt
+        const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET_KEY)
+
+        const {password: hashedPwd, ...restUser} = user._doc
         return res.status(201).json({
-            message: 'user created successfully'
+            message: 'user created successfully',
+            user: restUser,
+            token: `Bearer ${token}`
         })
     }
     catch (err) {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from 'axios'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "../global";
 import { signInStart, signInSuccess, signInFailure, inputHandleActive } from "../redux/user/userSlice";
 import { useSelector, useDispatch } from "react-redux";
@@ -19,6 +19,7 @@ export default function SignUp() {
     const inputStyles = "bg-slate-200 p-3 rounded-lg";
 
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const { loading, error } = useSelector((state) => state.user)
 
     function inputHandler(e) {
@@ -44,6 +45,7 @@ export default function SignUp() {
             console.log(response.data)
             //setLoading(false)
             dispatch(signInSuccess(response.data))
+            navigate('/profile')
         }
         catch (err) {
             //setLoading(false)

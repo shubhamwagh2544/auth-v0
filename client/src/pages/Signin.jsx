@@ -46,7 +46,8 @@ export default function SignIn() {
             console.log(response.data)
             //setLoading(false)
             dispatch(signInSuccess(response.data))
-            //navigate('/profile')
+            localStorage.setItem('token', response.data.token)
+            navigate('/profile')
         }
         catch (err) {
             //setLoading(false)
