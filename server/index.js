@@ -17,7 +17,7 @@ const corsConfig = {
         'http://localhost:5173',
         'http://localhost:3000',
         'https://auth-v0.onrender.com',
-        'http://127.0.0.1/5173'
+        'http://127.0.0.1:5173'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
     credentials: true
