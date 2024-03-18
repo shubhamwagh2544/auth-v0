@@ -103,7 +103,46 @@ app.post('/signin', async (req, res, next) => {
 
 // googleauth route
 app.post('/googleauth', async (req, res, next) => {
-    // TODO
+    try {
+        const user = await User.findOne({
+            email: req.body.email
+        })
+        if (user) {
+            const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET_KEY)
+            const { password: hashedPassword, ...restUser } = user._doc
+            
+            return res.status(200).json({
+                message: 'user signed in successfully',
+                user: restUser,
+                token: `Bearer ${token}`
+            })
+        }
+        else {
+            // create hashed password for user
+            const randomPassword = Math.random().toString(36).slice(-8)
+            const hashedPassword = bcrypt.hashSync(randomPassword, 10)
+            
+            const newUser = new User({
+                username: req.body.name + Math.floor(Math.random() * 1000),
+                email: req.body.email,
+                password: hashedPassword,
+                profilePhoto: req.body.photo
+            })
+            
+            await newUser.save()
+            const token = jwt.sign({ id: newUser._id, email: newUser.email }, process.env.JWT_SECRET_KEY)
+            const { password: hashedPwd, ...restUser } = newUser._doc
+            
+            return res.status(201).json({
+                message: 'user created and signed in successfully',
+                user: restUser,
+                token: `Bearer ${token}`
+            })
+        }
+    }
+    catch (err) {
+        next(err)
+    }
 })
 
 // update profile

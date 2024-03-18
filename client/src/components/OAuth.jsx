@@ -4,10 +4,12 @@ import { app } from '../firebase'
 import { BACKEND_URL } from '../global'
 import { useDispatch } from 'react-redux'
 import { signInFailure, signInStart, signInSuccess } from '../redux/user/userSlice'
+import { useNavigate } from 'react-router-dom'
 
 export default function OAuth() {
 
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     async function googleAuthHandler() {
         dispatch(signInStart())
@@ -15,19 +17,25 @@ export default function OAuth() {
             const provider = new GoogleAuthProvider()
             const auth = getAuth(app)
             const response = await signInWithPopup(auth, provider)
+
             console.log(response)
+
             const body = {
                 name: response.user.displayName,
                 email: response.user.email,
                 photo: response.user.photoURL
             }
+            console.log(body)
+
             const res = await axios.post(`${BACKEND_URL}/googleauth`, body, {
                 headers: {
                     "Content-Type": "application/json"
                 }
             })
             console.log(res.data)
-            dispatch(signInSuccess(res.data))
+            localStorage.setItem('token', res.data.token)
+            dispatch(signInSuccess(res.data.user))
+            navigate('/profile')
         }
         catch (err) {
             dispatch(signInFailure())
