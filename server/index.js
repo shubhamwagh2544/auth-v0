@@ -4,7 +4,6 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import bcrypt, { hash } from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import path from 'path'
 import { User } from './db.js'
 import errorHandler from './error.js'
 import { authmiddleware } from './authmiddleware.js'
@@ -32,13 +31,6 @@ app.use(cors())
 //app.use(cors(corsConfig))
 //app.options('*', cors(corsConfig));
 //app.use(cookieParser())
-
-// deployment
-const __dirname = path.resolve()
-app.use(express.static(path.join(__dirname, 'client/dist')))
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'))
-})
 
 // routes
 // signup route
