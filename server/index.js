@@ -4,7 +4,6 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import bcrypt, { hash } from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import cookieParser from 'cookie-parser'
 import path from 'path'
 import { User } from './db.js'
 import errorHandler from './error.js'
@@ -12,16 +11,16 @@ import { authmiddleware } from './authmiddleware.js'
 const app = express()
 const PORT = 3000
 dotenv.config()
-const corsConfig = {
-    origin: [
-        'http://localhost:5173',
-        'http://localhost:3000',
-        'https://auth-v0.onrender.com',
-        'http://127.0.0.1:5173'
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
-    credentials: true
-}
+// const corsConfig = {
+//     origin: [
+//         'http://localhost:5173',
+//         'http://localhost:3000',
+//         'https://auth-v0.onrender.com',
+//         'http://127.0.0.1:5173'
+//     ],
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
+//     credentials: true
+// }
 
 mongoose
     .connect(process.env.MONGO)
@@ -29,9 +28,10 @@ mongoose
     .catch((err) => console.log(err))
 
 app.use(express.json())
-app.use(cors(corsConfig))
-app.options('*', cors(corsConfig));
-app.use(cookieParser())
+app.use(cors())
+//app.use(cors(corsConfig))
+//app.options('*', cors(corsConfig));
+//app.use(cookieParser())
 
 // deployment
 const __dirname = path.resolve()
