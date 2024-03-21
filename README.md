@@ -75,7 +75,7 @@ The application is deployed using Render Platform
 
 ## Live Demo
 
-The project is currently live on Render. You can access the temporary deployment using the following link: [Temporary Deployment](https://auth-v0.onrender.com)
+The project is currently live on Render. You can access the temporary deployment using the following link: [Temporary Deployment](https://auth-v0-frontend.onrender.com)
 
 ## Todo
 - **Responsive Design**: The application should be responsive and accessible on various devices and screen sizes.
